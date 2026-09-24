@@ -215,15 +215,20 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
           const lower = name.toLowerCase().trim();
           return (
             !lower ||
-            lower.includes('mayamax') ||
-            lower.includes('maya max') ||
-            lower.includes('toplam') ||
-            lower.includes('total') ||
-            lower.includes('affiliate') ||
-            lower.includes('campaign') ||
-            lower.includes('kampanya') ||
+            lower === 'mayamax' ||
+            lower === 'maya max' ||
+            lower.startsWith('mayamax') ||
+            lower === 'toplam' ||
+            lower === 'total' ||
+            lower === 'affiliate' ||
+            lower === 'affiliate_name' ||
+            lower === 'campaign' ||
+            lower === 'campaign_code' ||
+            lower === 'kampanya' ||
             lower === 'user' ||
+            lower === 'user_name' ||
             lower === 'username' ||
+            lower === 'kullanıcı' ||
             lower === 'kullanıcı adı'
           );
         };

@@ -10,91 +10,63 @@
     "footerTemplate": "!stake",
     "autoMask": true,
     "dateFormat": "DD.MM.YYYY",
-    "showPrizes": false
+    "showPrizes": false,
+    "sheetsSyncEnabled": true,
+    "spreadsheetId": "1TECdVKOeytYv4a2zkXTOJ79nHP9umzc41gyO0KHMKSk",
+    "sheetRange": "A:G"
   },
   "items": [
-    {
-      "id": "1",
-      "rank": 1,
-      "username": "De**8",
-      "wager": 63011.06,
-      "prize": 0
-    },
-    {
-      "id": "2",
-      "rank": 2,
-      "username": "Ah**n",
-      "wager": 52350.07,
-      "prize": 0
-    },
-    {
-      "id": "3",
-      "rank": 3,
-      "username": "Pu**i",
-      "wager": 47901.68,
-      "prize": 0
-    },
-    {
-      "id": "4",
-      "rank": 4,
-      "username": "be**5",
-      "wager": 31268.39,
-      "prize": 0
-    },
-    {
-      "id": "5",
-      "rank": 5,
-      "username": "Co**e",
-      "wager": 26768.6,
-      "prize": 0
-    },
-    {
-      "id": "6",
-      "rank": 6,
-      "username": "oz**a",
-      "wager": 17988.22,
-      "prize": 0
-    },
-    {
-      "id": "7",
-      "rank": 7,
-      "username": "Bu**u",
-      "wager": 13187.94,
-      "prize": 0
-    },
-    {
-      "id": "8",
-      "rank": 8,
-      "username": "Al**5",
-      "wager": 12554.31,
-      "prize": 0
-    },
-    {
-      "id": "9",
-      "rank": 9,
-      "username": "Ya**7",
-      "wager": 10870.5,
-      "prize": 0
-    },
-    {
-      "id": "10",
-      "rank": 10,
-      "username": "Al**2",
-      "wager": 9757.55,
-      "prize": 0
-    }
+    { "id": "1", "rank": 1, "username": "Pu**i", "wager": 73242.36, "prize": 0 },
+    { "id": "2", "rank": 2, "username": "Ah**n", "wager": 70265.08, "prize": 0 },
+    { "id": "3", "rank": 3, "username": "Co**e", "wager": 63398.87, "prize": 0 },
+    { "id": "4", "rank": 4, "username": "De**8", "wager": 63293.59, "prize": 0 },
+    { "id": "5", "rank": 5, "username": "be**5", "wager": 31268.39, "prize": 0 },
+    { "id": "6", "rank": 6, "username": "oz**a", "wager": 18614.28, "prize": 0 },
+    { "id": "7", "rank": 7, "username": "ba**n", "wager": 14170.64, "prize": 0 },
+    { "id": "8", "rank": 8, "username": "Bu**u", "wager": 13298.55, "prize": 0 },
+    { "id": "9", "rank": 9, "username": "Ya**7", "wager": 12706.48, "prize": 0 },
+    { "id": "10", "rank": 10, "username": "Al**5", "wager": 12554.31, "prize": 0 },
+    { "id": "11", "rank": 11, "username": "Re**9", "wager": 11343.63, "prize": 0 },
+    { "id": "12", "rank": 12, "username": "Al**2", "wager": 11049.05, "prize": 0 },
+    { "id": "13", "rank": 13, "username": "Ma**2", "wager": 9508.06, "prize": 0 },
+    { "id": "14", "rank": 14, "username": "ay**r", "wager": 7242.39, "prize": 0 },
+    { "id": "15", "rank": 15, "username": "Us**4", "wager": 6272.57, "prize": 0 },
+    { "id": "16", "rank": 16, "username": "Al**l", "wager": 6252.89, "prize": 0 },
+    { "id": "17", "rank": 17, "username": "Mr**5", "wager": 5714.76, "prize": 0 },
+    { "id": "18", "rank": 18, "username": "Me**5", "wager": 5545.38, "prize": 0 },
+    { "id": "19", "rank": 19, "username": "Et**4", "wager": 5355.35, "prize": 0 },
+    { "id": "20", "rank": 20, "username": "Su**r", "wager": 5219.98, "prize": 0 },
+    { "id": "21", "rank": 21, "username": "Od**s", "wager": 5062.23, "prize": 0 },
+    { "id": "22", "rank": 22, "username": "Ca**7", "wager": 4384.84, "prize": 0 },
+    { "id": "23", "rank": 23, "username": "To**1", "wager": 4304.95, "prize": 0 },
+    { "id": "24", "rank": 24, "username": "Ka**t", "wager": 3706.49, "prize": 0 },
+    { "id": "25", "rank": 25, "username": "Yu**4", "wager": 3499.08, "prize": 0 },
+    { "id": "26", "rank": 26, "username": "Ha**3", "wager": 3161.13, "prize": 0 },
+    { "id": "27", "rank": 27, "username": "Mr**c", "wager": 3152.07, "prize": 0 },
+    { "id": "28", "rank": 28, "username": "ru**7", "wager": 2691.8, "prize": 0 },
+    { "id": "29", "rank": 29, "username": "mr**1", "wager": 2671.7, "prize": 0 },
+    { "id": "30", "rank": 30, "username": "Sa**9", "wager": 1792.64, "prize": 0 },
+    { "id": "31", "rank": 31, "username": "bu**x", "wager": 1752.77, "prize": 0 },
+    { "id": "32", "rank": 32, "username": "Ce**2", "wager": 1729.7, "prize": 0 },
+    { "id": "33", "rank": 33, "username": "Po**1", "wager": 1431.39, "prize": 0 },
+    { "id": "34", "rank": 34, "username": "At**9", "wager": 1151.12, "prize": 0 },
+    { "id": "35", "rank": 35, "username": "Al**5", "wager": 998.91, "prize": 0 },
+    { "id": "36", "rank": 36, "username": "Ha**2", "wager": 981.09, "prize": 0 },
+    { "id": "37", "rank": 37, "username": "Ta**1", "wager": 911.65, "prize": 0 },
+    { "id": "38", "rank": 38, "username": "Em**n", "wager": 444.91, "prize": 0 },
+    { "id": "39", "rank": 39, "username": "Ha**1", "wager": 338.06, "prize": 0 },
+    { "id": "40", "rank": 40, "username": "by**1", "wager": 276.56, "prize": 0 },
+    { "id": "41", "rank": 41, "username": "ER**1", "wager": 257.42, "prize": 0 },
+    { "id": "42", "rank": 42, "username": "ma**a", "wager": 193.75, "prize": 0 },
+    { "id": "43", "rank": 43, "username": "be**4", "wager": 188.47, "prize": 0 },
+    { "id": "44", "rank": 44, "username": "Cy**8", "wager": 178.68, "prize": 0 },
+    { "id": "45", "rank": 45, "username": "sf**5", "wager": 155.07, "prize": 0 },
+    { "id": "46", "rank": 46, "username": "ad**1", "wager": 152.79, "prize": 0 },
+    { "id": "47", "rank": 47, "username": "Ga**1", "wager": 71.41, "prize": 0 },
+    { "id": "48", "rank": 48, "username": "Em**7", "wager": 60.05, "prize": 0 },
+    { "id": "49", "rank": 49, "username": "ar**a", "wager": 51.17, "prize": 0 },
+    { "id": "50", "rank": 50, "username": "Ce**y", "wager": 47.17, "prize": 0 }
   ],
-  "logs": [
-    {
-      "id": "990b05y",
-      "timestamp": "2026-09-24T10:56:24.068Z",
-      "dateStr": "24.09.2026",
-      "status": "error",
-      "chatId": "Tanımsız",
-      "messageContent": "STAKE 24.09.2026 3000💵 ÖDÜLLÜ GÜNCEL ÇEVRİM LİSTESİ\n\n1. De**8 $63,011.06\n\n2. Ah**n $52,350.07\n\n3. Pu**i $47,901.68\n\n4. be**5 $31,268.39\n\n5. Co**e $26,768.60\n\n6. oz**a $17,988.22\n\n7. Bu**u $13,187.94\n\n8. Al**5 $12,554.31\n\n9. Ya**7 $10,870.50\n\n10. Al**2 $9,757.55\n\n!stake",
-      "error": "Bot Token girilmemiş. Lütfen Telegram Bot Ayarlarından token ekleyin.",
-      "triggeredBy": "manual"
-    }
-  ],
+  "logs": [],
   "lastRunDate": null
 }
