@@ -55,6 +55,20 @@ function loadState(): StoredData {
 
 let state: StoredData = loadState();
 
+state.config = {
+  ...state.config,
+  botToken: process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || state.config.botToken,
+  chatId: process.env.TELEGRAM_CHAT_ID || state.config.chatId,
+  spreadsheetId:
+    process.env.GOOGLE_SHEET_ID ||
+    state.config.spreadsheetId ||
+    '1TECdVKOeytYv4a2zkXTOJ79nHP9umzc41gyO0KHMKSk',
+  sheetGid: process.env.GOOGLE_SHEET_GID || state.config.sheetGid || '235680015',
+  sheetRange: process.env.GOOGLE_SHEET_RANGE || state.config.sheetRange || 'A1:Z1000',
+  sheetsSyncEnabled: true,
+  timezone: process.env.TIMEZONE || state.config.timezone || 'Europe/Istanbul',
+};
+
 function saveState() {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(state, null, 2), 'utf-8');
@@ -76,7 +90,7 @@ async function callTelegramApi(token: string, method: string, payload: Record<st
 }
 
 // Helper function to fetch Google Sheets data on the server
-async function fetchServerSheetData(spreadsheetId: string, range: string, accessToken?: string): Promise<any[][]> {
+async function fetchServerSheetData(spreadsheetId: string, range: string, accessToken?: string, gid?: string): Promise<any[][]> {
   const cleanId = spreadsheetId.trim().match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)?.[1] || spreadsheetId.trim();
   const cleanRange = range ? range.trim() : 'A1:E50';
 
@@ -106,7 +120,9 @@ async function fetchServerSheetData(spreadsheetId: string, range: string, access
   }
   const csvUrl = sheetName
     ? `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&tq=&_t=${timestamp}`
-    : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&id=${cleanId}&_t=${timestamp}`;
+    : gid
+      ? `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&gid=${encodeURIComponent(gid)}&_t=${timestamp}`
+      : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&id=${cleanId}&_t=${timestamp}`;
 
   const csvRes = await fetch(csvUrl, {
     cache: 'no-store',
@@ -159,8 +175,9 @@ async function syncGoogleSheetsData(): Promise<boolean> {
   try {
     const rows = await fetchServerSheetData(
       state.config.spreadsheetId,
-      state.config.sheetRange || 'A1:G100',
-      state.config.googleAccessToken
+      state.config.sheetRange || 'A1:Z1000',
+      state.config.googleAccessToken,
+      state.config.sheetGid
     );
 
     if (rows && rows.length > 0) {
@@ -274,7 +291,7 @@ async function syncGoogleSheetsData(): Promise<boolean> {
         if (prizeCol !== -1 && row[prizeCol] !== undefined && String(row[prizeCol]).trim() !== '') {
           prize = parseFloat(String(row[prizeCol]).replace(/[^0-9.]/g, '')) || 0;
         } else {
-          prize = DEFAULT_PRIZES[rankCounter - 1] ?? 0;
+          prize = 0;
         }
 
         parsedItems.push({
@@ -290,11 +307,16 @@ async function syncGoogleSheetsData(): Promise<boolean> {
       if (parsedItems.length > 0) {
         if (parsedItems.some((r) => r.wager > 0)) {
           parsedItems.sort((a, b) => b.wager - a.wager);
-          parsedItems.forEach((item, idx) => {
-            item.rank = idx + 1;
-          });
         }
-        state.items = parsedItems;
+
+        parsedItems.forEach((item, idx) => {
+          item.rank = idx + 1;
+          if (prizeCol === -1) {
+            item.prize = DEFAULT_PRIZES[idx] ?? 0;
+          }
+        });
+
+        state.items = parsedItems.slice(0, 10);
         saveState();
         console.log(`[Google Sheets Arka Plan Senkronizasyonu] ${state.items.length} kayıt otomatik güncellendi.`);
         return true;
@@ -304,6 +326,86 @@ async function syncGoogleSheetsData(): Promise<boolean> {
     console.error('[Google Sheets Senkronizasyon Hatası]:', sheetErr);
   }
   return false;
+}
+
+function isStakeCommand(text: string): boolean {
+  const trimmed = text.trim();
+  return /^!stake$/i.test(trimmed) || /^\/stake(?:@[A-Za-z0-9_]+)?$/i.test(trimmed);
+}
+
+async function sendStakeCommandResponse(chatId: string | number, replyToMessageId?: number) {
+  const token = state.config.botToken;
+  if (!token) {
+    return { success: false, error: 'TELEGRAM_BOT_TOKEN eksik.' };
+  }
+
+  const synced = await syncGoogleSheetsData();
+  if (!synced) {
+    const errorText =
+      '⚠️ Google Sheets verisi şu anda okunamadı. Tablo paylaşımını ve Sheet ayarlarını kontrol edin.';
+    const telegramRes = await callTelegramApi(token, 'sendMessage', {
+      chat_id: chatId,
+      text: errorText,
+      ...(replyToMessageId ? { reply_to_message_id: replyToMessageId } : {}),
+    });
+    return {
+      success: Boolean(telegramRes.ok),
+      error: telegramRes.ok ? 'Google Sheets sync failed' : telegramRes.description,
+    };
+  }
+
+  const todayStr = getFormattedDateInTz(state.config.timezone);
+  const messageContent = buildTelegramMessage(
+    state.config,
+    state.items.slice(0, 10),
+    todayStr
+  );
+
+  const telegramRes = await callTelegramApi(token, 'sendMessage', {
+    chat_id: chatId,
+    text: messageContent,
+    disable_web_page_preview: true,
+    ...(replyToMessageId ? { reply_to_message_id: replyToMessageId } : {}),
+  });
+
+  return {
+    success: Boolean(telegramRes.ok),
+    error: telegramRes.ok ? undefined : telegramRes.description,
+  };
+}
+
+async function configureTelegramWebhook() {
+  const token = state.config.botToken;
+  const publicUrl = (process.env.RENDER_EXTERNAL_URL || process.env.PUBLIC_URL || '').replace(/\/$/, '');
+
+  if (!token) {
+    console.warn('[Telegram] TELEGRAM_BOT_TOKEN tanımlı değil; webhook kurulmadı.');
+    return;
+  }
+
+  if (!publicUrl) {
+    console.warn('[Telegram] Public URL bulunamadı; webhook otomatik kurulamadı.');
+    return;
+  }
+
+  const secret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim();
+  const payload: Record<string, unknown> = {
+    url: `${publicUrl}/telegram/webhook`,
+    allowed_updates: ['message'],
+    drop_pending_updates: false,
+  };
+
+  if (secret) {
+    payload.secret_token = secret;
+  }
+
+  const result = await callTelegramApi(token, 'setWebhook', payload);
+  if (!result.ok) {
+    console.error('[Telegram] Webhook kurulamadı:', result.description || result);
+    return;
+  }
+
+  console.log(`[Telegram] Webhook aktif: ${publicUrl}/telegram/webhook`);
 }
 
 // Function to broadcast message
@@ -319,7 +421,7 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
   const { botToken, chatId } = state.config;
 
   const todayStr = getFormattedDateInTz(state.config.timezone);
-  const messageContent = buildTelegramMessage(state.config, state.items, todayStr);
+  const messageContent = buildTelegramMessage(state.config, state.items.slice(0, 10), todayStr);
 
   if (!botToken || !chatId) {
     const errorMsg = !botToken
@@ -463,6 +565,33 @@ async function startServer() {
   // API Routes
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+  });
+
+  app.post('/telegram/webhook', async (req, res) => {
+    try {
+      const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim();
+      const receivedSecret = req.header('x-telegram-bot-api-secret-token');
+
+      if (expectedSecret && receivedSecret !== expectedSecret) {
+        return res.status(403).json({ ok: false });
+      }
+
+      const update = req.body || {};
+      const message = update.message || update.edited_message || update.channel_post;
+      const text = String(message?.text || '');
+
+      if (message?.chat?.id && isStakeCommand(text)) {
+        const result = await sendStakeCommandResponse(message.chat.id, message.message_id);
+        if (!result.success) {
+          console.error('[Telegram] !stake yanıtı gönderilemedi:', result.error);
+        }
+      }
+
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error('[Telegram Webhook Error]:', err);
+      return res.status(200).json({ ok: true });
+    }
   });
 
   app.get('/api/state', (req, res) => {
@@ -609,6 +738,9 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Stake Telegram Bot sunucusu port ${PORT} üzerinde hazır!`);
+    configureTelegramWebhook().catch((err) =>
+      console.error('[Telegram] Webhook başlangıç hatası:', err)
+    );
   });
 }
 
