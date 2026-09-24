@@ -153,32 +153,46 @@ export function parseSheetRowsToLeaderboard(
     const rawUsername = String(row[nameIdx] || `Oyuncu${rankCounter}`).trim();
     if (!rawUsername) continue;
 
+    // EXCLUDE "mayamax" or affiliate owner / header labels
+    const lowerName = rawUsername.toLowerCase();
+    if (
+      lowerName.includes('mayamax') ||
+      lowerName.includes('maya max') ||
+      lowerName.includes('toplam') ||
+      lowerName.includes('total') ||
+      lowerName.includes('affiliate') ||
+      lowerName.includes('campaign') ||
+      lowerName.includes('kampanya')
+    ) {
+      continue;
+    }
+
     const username = autoMask ? maskUsername(rawUsername) : rawUsername;
 
     // Parse wager
     const rawWager = String(row[wagerIdx] || '0').replace(/[^0-9.]/g, '');
     const wager = parseFloat(rawWager) || 0;
 
-    // Parse prize
+    // Parse prize (if not in sheet, auto assign from prize pool or default distribution)
     let prize = 0;
     if (row[prizeIdx] !== undefined && row[prizeIdx] !== null && String(row[prizeIdx]).trim() !== '') {
       const rawPrize = String(row[prizeIdx]).replace(/[^0-9.]/g, '');
       prize = parseFloat(rawPrize) || 0;
     } else {
-      prize = DEFAULT_PRIZE_DISTRIBUTION[rank - 1] ?? 0;
+      prize = DEFAULT_PRIZE_DISTRIBUTION[rankCounter - 1] ?? 0;
     }
 
     results.push({
       id: Math.random().toString(36).substring(2, 9),
-      rank,
+      rank: rankCounter,
       username,
       wager,
       prize,
     });
 
-    rankCounter = rank + 1;
+    rankCounter++;
   }
 
-  // Sort by rank
+  // Sort by wager descending or rank ascending
   return results.sort((a, b) => a.rank - b.rank);
 }

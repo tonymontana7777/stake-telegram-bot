@@ -27,6 +27,7 @@ export const AutomationSettings: React.FC<AutomationSettingsProps> = ({
     config.headerTemplate || 'STAKE {TARIH} {ODUL}💵 ÖDÜLLÜ GÜNCEL ÇEVRİM LİSTESİ'
   );
   const [footerTemplate, setFooterTemplate] = useState(config.footerTemplate || '!stake');
+  const [showPrizes, setShowPrizes] = useState(config.showPrizes !== undefined ? config.showPrizes : true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -49,6 +50,7 @@ export const AutomationSettings: React.FC<AutomationSettingsProps> = ({
         totalPrize: Number(totalPrize) || 3000,
         headerTemplate,
         footerTemplate,
+        showPrizes,
       });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2500);
@@ -204,6 +206,25 @@ export const AutomationSettings: React.FC<AutomationSettingsProps> = ({
                 .replace('{ODUL}', String(totalPrize || 3000))}
             </span>
           </div>
+        </div>
+
+        {/* Prize display toggle */}
+        <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div className="space-y-0.5">
+            <span className="text-xs font-semibold text-white">Satırlarda Ödül Miktarını Göster</span>
+            <p className="text-[11px] text-slate-400">
+              Kapatırsanız her satırda sadece kullanıcı adı ve çevrim tutarı yazar (Örn: <code>1. De**8 $63,011.06</code>).
+            </p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showPrizes}
+              onChange={(e) => setShowPrizes(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+          </label>
         </div>
 
         {/* Submit */}

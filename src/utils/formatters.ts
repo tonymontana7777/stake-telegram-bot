@@ -119,10 +119,16 @@ export function buildTelegramMessage(
     const rank = item.rank || idx + 1;
     const name = config.autoMask ? maskUsername(item.username) : item.username;
     const wagerStr = formatCurrency(item.wager);
-    const prizeStr = formatPrize(item.prize);
 
-    // Exact user format: "1. De**8 $63,011.06 -$800"
-    lines.push(`${rank}. ${name} ${wagerStr} ${prizeStr}`);
+    // If showPrizes is explicitly set to false, only show rank, username and wager
+    if (config.showPrizes === false) {
+      lines.push(`${rank}. ${name} ${wagerStr}`);
+    } else if (item.prize && item.prize > 0) {
+      const prizeStr = formatPrize(item.prize);
+      lines.push(`${rank}. ${name} ${wagerStr} ${prizeStr}`);
+    } else {
+      lines.push(`${rank}. ${name} ${wagerStr}`);
+    }
     lines.push(''); // Telegram message in user example has an empty line between entries!
   });
 

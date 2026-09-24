@@ -200,6 +200,7 @@ export default function App() {
             autoMask={config.autoMask}
             onToggleAutoMask={(val) => handleSaveConfig({ autoMask: val })}
             onOpenGoogleSheetsTab={() => setActiveTab('google-sheets')}
+            onSaveConfig={handleSaveConfig}
           />
         )}
 

@@ -17,6 +17,7 @@ export interface BotConfig {
   footerTemplate: string; // "!stake"
   autoMask: boolean; // auto mask unmasked usernames e.g. Deniz8 -> De**8
   dateFormat: string; // "DD.MM.YYYY"
+  showPrizes?: boolean; // if false, only show username and wager without prize amount
   // Google Sheets sync settings
   sheetsSyncEnabled?: boolean;
   spreadsheetId?: string;

@@ -32,6 +32,7 @@ interface LeaderboardEditorProps {
   autoMask: boolean;
   onToggleAutoMask: (val: boolean) => void;
   onOpenGoogleSheetsTab?: () => void;
+  onSaveConfig?: (cfg: any) => Promise<void>;
 }
 
 export const LeaderboardEditor: React.FC<LeaderboardEditorProps> = ({
@@ -40,6 +41,7 @@ export const LeaderboardEditor: React.FC<LeaderboardEditorProps> = ({
   autoMask,
   onToggleAutoMask,
   onOpenGoogleSheetsTab,
+  onSaveConfig,
 }) => {
   const [localItems, setLocalItems] = useState<LeaderboardItem[]>(items);
   const [isSaving, setIsSaving] = useState(false);
@@ -175,6 +177,12 @@ export const LeaderboardEditor: React.FC<LeaderboardEditorProps> = ({
 
       setLocalItems(parsed);
       await onSaveItems(parsed);
+      if (onSaveConfig) {
+        await onSaveConfig({
+          spreadsheetId: sheetUrlInput.trim(),
+          sheetsSyncEnabled: true,
+        });
+      }
       setShowSheetModal(false);
       setSheetUrlInput('');
       setImportStatus({

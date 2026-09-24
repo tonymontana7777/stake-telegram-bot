@@ -196,6 +196,20 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
           const rawName = String(row[nameIdx] || `Oyuncu${rankCounter}`).trim();
           if (!rawName) continue;
 
+          // EXCLUDE "mayamax" or affiliate owner / summary row
+          const lowerName = rawName.toLowerCase();
+          if (
+            lowerName.includes('mayamax') ||
+            lowerName.includes('maya max') ||
+            lowerName.includes('toplam') ||
+            lowerName.includes('total') ||
+            lowerName.includes('affiliate') ||
+            lowerName.includes('campaign') ||
+            lowerName.includes('kampanya')
+          ) {
+            continue;
+          }
+
           const rawWager = String(row[wagerIdx] || '0').replace(/[^0-9.]/g, '');
           const wager = parseFloat(rawWager) || 0;
 
@@ -203,17 +217,17 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
           if (row[prizeIdx] !== undefined && row[prizeIdx] !== null && String(row[prizeIdx]).trim() !== '') {
             prize = parseFloat(String(row[prizeIdx]).replace(/[^0-9.]/g, '')) || 0;
           } else {
-            prize = DEFAULT_PRIZES[rank - 1] ?? 0;
+            prize = DEFAULT_PRIZES[rankCounter - 1] ?? 0;
           }
 
           parsedItems.push({
             id: Math.random().toString(36).substring(2, 9),
-            rank,
+            rank: rankCounter,
             username: rawName,
             wager,
             prize,
           });
-          rankCounter = rank + 1;
+          rankCounter++;
         }
 
         if (parsedItems.length > 0) {
