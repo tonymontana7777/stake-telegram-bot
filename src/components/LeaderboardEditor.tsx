@@ -168,7 +168,7 @@ export const LeaderboardEditor: React.FC<LeaderboardEditorProps> = ({
     setImportStatus(null);
 
     try {
-      const rows = await fetchGoogleSheetData(sheetUrlInput.trim(), 'A1:E50');
+      const rows = await fetchGoogleSheetData(sheetUrlInput.trim(), 'A1:G100');
       const parsed = parseSheetRowsToLeaderboard(rows, autoMask);
 
       if (parsed.length === 0) {
