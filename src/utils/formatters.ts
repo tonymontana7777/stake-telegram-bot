@@ -149,8 +149,19 @@ export function parseRawInput(text: string, autoMask = true): LeaderboardItem[] 
   let rankCounter = 1;
 
   for (const line of lines) {
-    // Ignore header lines or footer commands like "!stake" or "STAKE"
-    if (line.startsWith('!') || line.toLowerCase().includes('ödüllü') || line.toLowerCase().includes('çevrim') || line.toLowerCase().includes('rank') || line.toLowerCase().includes('username')) {
+    // Ignore header lines or footer commands like "!stake" or "STAKE" or mayamax
+    const lowerLine = line.toLowerCase();
+    if (
+      line.startsWith('!') ||
+      lowerLine.includes('ödüllü') ||
+      lowerLine.includes('çevrim') ||
+      lowerLine.includes('rank') ||
+      lowerLine.includes('username') ||
+      lowerLine.includes('mayamax') ||
+      lowerLine.includes('maya max') ||
+      lowerLine.includes('affiliate') ||
+      lowerLine.includes('kampanya')
+    ) {
       continue;
     }
 

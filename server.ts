@@ -8,6 +8,7 @@ import {
   INITIAL_LEADERBOARD,
   buildTelegramMessage,
   getFormattedDateInTz,
+  maskUsername,
 } from './src/utils/formatters.ts';
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -160,19 +161,64 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
 
       if (rows && rows.length > 0) {
         let startIndex = 0;
-        const firstRowStr = rows[0].map((c: any) => String(c).toLowerCase()).join(' ');
-        if (
-          firstRowStr.includes('rank') ||
-          firstRowStr.includes('sıra') ||
-          firstRowStr.includes('user') ||
-          firstRowStr.includes('kullanıcı') ||
-          firstRowStr.includes('wager') ||
-          firstRowStr.includes('çevrim') ||
-          firstRowStr.includes('ödül') ||
-          firstRowStr.includes('isim')
-        ) {
-          startIndex = 1;
+        let userCol = -1;
+        let wagerCol = -1;
+        let prizeCol = -1;
+
+        for (let r = 0; r < Math.min(5, rows.length); r++) {
+          const row = rows[r];
+          if (!row || row.length === 0) continue;
+          for (let c = 0; c < row.length; c++) {
+            const val = String(row[c] || '').toLowerCase().trim();
+            if (val.includes('kullanıcı') || val.includes('username') || val.includes('user') || val.includes('oyuncu') || val === 'isim' || val === 'name') {
+              userCol = c;
+              startIndex = Math.max(startIndex, r + 1);
+            } else if (val.includes('wager') || val.includes('çevrim') || val.includes('turnover') || val.includes('bet') || val.includes('tutar') || val.includes('amount')) {
+              wagerCol = c;
+              startIndex = Math.max(startIndex, r + 1);
+            } else if (val.includes('ödül') || val.includes('prize') || val.includes('reward')) {
+              prizeCol = c;
+            }
+          }
+          if (userCol !== -1 && wagerCol !== -1) break;
         }
+
+        if (userCol === -1 || wagerCol === -1) {
+          const sampleRow = rows[startIndex] || rows[0];
+          if (sampleRow) {
+            for (let c = 0; c < sampleRow.length; c++) {
+              const val = String(sampleRow[c] || '').trim();
+              const lower = val.toLowerCase();
+              if (lower.includes('mayamax') || lower.includes('maya max')) continue;
+              const isNumeric = /^[\$€₺]?\s*[\d,]+(\.\d+)?\s*[\$€₺]?$/.test(val);
+              if (isNumeric && wagerCol === -1) {
+                wagerCol = c;
+              } else if (!isNumeric && userCol === -1 && val.length > 0 && !/^\d+$/.test(val)) {
+                userCol = c;
+              }
+            }
+          }
+        }
+
+        if (userCol === -1) userCol = 0;
+        if (wagerCol === -1) wagerCol = userCol === 0 ? 1 : 0;
+
+        const isExcluded = (name: string) => {
+          const lower = name.toLowerCase().trim();
+          return (
+            !lower ||
+            lower.includes('mayamax') ||
+            lower.includes('maya max') ||
+            lower.includes('toplam') ||
+            lower.includes('total') ||
+            lower.includes('affiliate') ||
+            lower.includes('campaign') ||
+            lower.includes('kampanya') ||
+            lower === 'user' ||
+            lower === 'username' ||
+            lower === 'kullanıcı adı'
+          );
+        };
 
         const parsedItems: LeaderboardItem[] = [];
         const DEFAULT_PRIZES = [800, 500, 400, 350, 300, 250, 200, 100, 75, 25];
@@ -181,41 +227,43 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
         for (let i = startIndex; i < rows.length; i++) {
           const row = rows[i];
           if (!row || row.length === 0) continue;
-          let rank = rankCounter;
-          let nameIdx = 0;
-          let wagerIdx = 1;
-          let prizeIdx = 2;
 
-          if (/^\d+$/.test(String(row[0]).trim())) {
-            rank = parseInt(String(row[0]).trim(), 10);
-            nameIdx = 1;
-            wagerIdx = 2;
-            prizeIdx = 3;
+          let rawUsername = '';
+          if (userCol !== -1 && row[userCol] !== undefined) {
+            rawUsername = String(row[userCol]).trim();
           }
 
-          const rawName = String(row[nameIdx] || `Oyuncu${rankCounter}`).trim();
-          if (!rawName) continue;
-
-          // EXCLUDE "mayamax" or affiliate owner / summary row
-          const lowerName = rawName.toLowerCase();
-          if (
-            lowerName.includes('mayamax') ||
-            lowerName.includes('maya max') ||
-            lowerName.includes('toplam') ||
-            lowerName.includes('total') ||
-            lowerName.includes('affiliate') ||
-            lowerName.includes('campaign') ||
-            lowerName.includes('kampanya')
-          ) {
-            continue;
+          if (isExcluded(rawUsername)) {
+            for (let c = 0; c < row.length; c++) {
+              const candidate = String(row[c] || '').trim();
+              if (c !== wagerCol && !isExcluded(candidate) && !/^[\$€₺]?\s*[\d,]+(\.\d+)?\s*[\$€₺]?$/.test(candidate) && !/^\d+$/.test(candidate)) {
+                rawUsername = candidate;
+                break;
+              }
+            }
           }
 
-          const rawWager = String(row[wagerIdx] || '0').replace(/[^0-9.]/g, '');
+          if (isExcluded(rawUsername)) continue;
+
+          let rawWagerStr = '';
+          if (wagerCol !== -1 && row[wagerCol] !== undefined) {
+            rawWagerStr = String(row[wagerCol]);
+          } else {
+            for (let c = 0; c < row.length; c++) {
+              const candidate = String(row[c] || '').trim();
+              if (/^[\$€₺]?\s*[\d,]+(\.\d+)?\s*[\$€₺]?$/.test(candidate)) {
+                rawWagerStr = candidate;
+                break;
+              }
+            }
+          }
+
+          const rawWager = rawWagerStr.replace(/[^0-9.]/g, '');
           const wager = parseFloat(rawWager) || 0;
 
           let prize = 0;
-          if (row[prizeIdx] !== undefined && row[prizeIdx] !== null && String(row[prizeIdx]).trim() !== '') {
-            prize = parseFloat(String(row[prizeIdx]).replace(/[^0-9.]/g, '')) || 0;
+          if (prizeCol !== -1 && row[prizeCol] !== undefined && String(row[prizeCol]).trim() !== '') {
+            prize = parseFloat(String(row[prizeCol]).replace(/[^0-9.]/g, '')) || 0;
           } else {
             prize = DEFAULT_PRIZES[rankCounter - 1] ?? 0;
           }
@@ -223,7 +271,7 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
           parsedItems.push({
             id: Math.random().toString(36).substring(2, 9),
             rank: rankCounter,
-            username: rawName,
+            username: state.config.autoMask ? maskUsername(rawUsername) : rawUsername,
             wager,
             prize,
           });
@@ -231,9 +279,15 @@ async function executeBroadcast(triggeredBy: 'scheduler' | 'manual'): Promise<{
         }
 
         if (parsedItems.length > 0) {
-          state.items = parsedItems.sort((a, b) => a.rank - b.rank);
+          if (parsedItems.some((r) => r.wager > 0)) {
+            parsedItems.sort((a, b) => b.wager - a.wager);
+            parsedItems.forEach((item, idx) => {
+              item.rank = idx + 1;
+            });
+          }
+          state.items = parsedItems;
           saveState();
-          console.log(`[Google Sheets] ${state.items.length} kayıt başarıyla güncellendi.`);
+          console.log(`[Google Sheets] ${state.items.length} kayıt başarıyla güncellendi (mayamax filtrelendi).`);
         }
       }
     } catch (sheetErr) {

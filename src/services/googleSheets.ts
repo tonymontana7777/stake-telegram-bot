@@ -110,21 +110,61 @@ export function parseSheetRowsToLeaderboard(
 
   const results: LeaderboardItem[] = [];
   let startIndex = 0;
+  let userCol = -1;
+  let wagerCol = -1;
+  let prizeCol = -1;
+  let rankCol = -1;
 
-  // Check if first row is header (e.g. contains "name", "rank", "wager", "çevrim", "kullanıcı")
-  const firstRowStr = rows[0].map((cell) => String(cell).toLowerCase()).join(' ');
-  if (
-    firstRowStr.includes('rank') ||
-    firstRowStr.includes('sıra') ||
-    firstRowStr.includes('user') ||
-    firstRowStr.includes('kullanıcı') ||
-    firstRowStr.includes('wager') ||
-    firstRowStr.includes('çevrim') ||
-    firstRowStr.includes('ödül') ||
-    firstRowStr.includes('isim')
-  ) {
-    startIndex = 1;
+  // Inspect the first 5 rows to locate header columns
+  for (let r = 0; r < Math.min(5, rows.length); r++) {
+    const row = rows[r];
+    if (!row || row.length === 0) continue;
+
+    for (let c = 0; c < row.length; c++) {
+      const val = String(row[c] || '').toLowerCase().trim();
+      if (!val) continue;
+
+      if (val.includes('kullanıcı') || val.includes('username') || val.includes('user') || val.includes('oyuncu') || val === 'isim' || val === 'name') {
+        userCol = c;
+        startIndex = Math.max(startIndex, r + 1);
+      } else if (val.includes('wager') || val.includes('çevrim') || val.includes('turnover') || val.includes('bet') || val.includes('tutar') || val.includes('amount')) {
+        wagerCol = c;
+        startIndex = Math.max(startIndex, r + 1);
+      } else if (val.includes('ödül') || val.includes('prize') || val.includes('reward')) {
+        prizeCol = c;
+      } else if (val.includes('sıra') || val.includes('rank') || val === 'no' || val === '#') {
+        rankCol = c;
+      }
+    }
+    if (userCol !== -1 && wagerCol !== -1) {
+      break;
+    }
   }
+
+  // Fallback column detection if no explicit headers found
+  if (userCol === -1 || wagerCol === -1) {
+    // Scan rows to find which column looks like usernames and which looks like numbers/currency
+    const sampleRow = rows[startIndex] || rows[0];
+    if (sampleRow) {
+      for (let c = 0; c < sampleRow.length; c++) {
+        const val = String(sampleRow[c] || '').trim();
+        const lower = val.toLowerCase();
+        // Skip mayamax campaign/affiliate column
+        if (lower.includes('mayamax') || lower.includes('maya max')) continue;
+
+        const isNumeric = /^[\$€₺]?\s*[\d,]+(\.\d+)?\s*[\$€₺]?$/.test(val);
+        if (isNumeric && wagerCol === -1) {
+          wagerCol = c;
+        } else if (!isNumeric && userCol === -1 && val.length > 0 && !/^\d+$/.test(val)) {
+          userCol = c;
+        }
+      }
+    }
+  }
+
+  // Ultimate defaults if still not found
+  if (userCol === -1) userCol = 0;
+  if (wagerCol === -1) wagerCol = userCol === 0 ? 1 : 0;
 
   let rankCounter = 1;
 
@@ -132,55 +172,79 @@ export function parseSheetRowsToLeaderboard(
     const row = rows[i];
     if (!row || row.length === 0) continue;
 
-    // Filter empty cells
+    // Filter empty rows
     const nonEmpties = row.filter((c) => c !== undefined && c !== null && String(c).trim() !== '');
     if (nonEmpties.length === 0) continue;
 
-    let rank = rankCounter;
-    let nameIdx = 0;
-    let wagerIdx = 1;
-    let prizeIdx = 2;
+    // Find actual username in the row
+    let rawUsername = '';
+    let rawWagerStr = '';
+    let rawPrizeStr = '';
 
-    // Detect column pattern
-    // Case 1: Col 0 is rank number e.g. [1, "De**8", "$63,011.06", "$800"]
-    if (/^\d+$/.test(String(row[0]).trim())) {
-      rank = parseInt(String(row[0]).trim(), 10);
-      nameIdx = 1;
-      wagerIdx = 2;
-      prizeIdx = 3;
+    // If explicit userCol is set
+    if (userCol !== -1 && row[userCol] !== undefined) {
+      rawUsername = String(row[userCol]).trim();
     }
 
-    const rawUsername = String(row[nameIdx] || `Oyuncu${rankCounter}`).trim();
-    if (!rawUsername) continue;
+    // Check if rawUsername is "mayamax", campaign name, or empty -> search other columns
+    const isExcluded = (name: string) => {
+      const lower = name.toLowerCase().trim();
+      return (
+        !lower ||
+        lower.includes('mayamax') ||
+        lower.includes('maya max') ||
+        lower.includes('toplam') ||
+        lower.includes('total') ||
+        lower.includes('affiliate') ||
+        lower.includes('campaign') ||
+        lower.includes('kampanya') ||
+        lower === 'user' ||
+        lower === 'username' ||
+        lower === 'kullanıcı adı'
+      );
+    };
 
-    // EXCLUDE "mayamax" or affiliate owner / header labels
-    const lowerName = rawUsername.toLowerCase();
-    if (
-      lowerName.includes('mayamax') ||
-      lowerName.includes('maya max') ||
-      lowerName.includes('toplam') ||
-      lowerName.includes('total') ||
-      lowerName.includes('affiliate') ||
-      lowerName.includes('campaign') ||
-      lowerName.includes('kampanya')
-    ) {
+    if (isExcluded(rawUsername)) {
+      // Look for another column that has an actual username (string that isn't mayamax and isn't pure numeric)
+      for (let c = 0; c < row.length; c++) {
+        const candidate = String(row[c] || '').trim();
+        if (c !== wagerCol && !isExcluded(candidate) && !/^[\$€₺]?\s*[\d,]+(\.\d+)?\s*[\$€₺]?$/.test(candidate) && !/^\d+$/.test(candidate)) {
+          rawUsername = candidate;
+          break;
+        }
+      }
+    }
+
+    // If still excluded or empty, skip this row entirely!
+    if (isExcluded(rawUsername)) {
       continue;
     }
 
-    const username = autoMask ? maskUsername(rawUsername) : rawUsername;
+    // Get wager
+    if (wagerCol !== -1 && row[wagerCol] !== undefined) {
+      rawWagerStr = String(row[wagerCol]);
+    } else {
+      // Find numeric cell
+      for (let c = 0; c < row.length; c++) {
+        const candidate = String(row[c] || '').trim();
+        if (/^[\$€₺]?\s*[\d,]+(\.\d+)?\s*[\$€₺]?$/.test(candidate)) {
+          rawWagerStr = candidate;
+          break;
+        }
+      }
+    }
 
-    // Parse wager
-    const rawWager = String(row[wagerIdx] || '0').replace(/[^0-9.]/g, '');
-    const wager = parseFloat(rawWager) || 0;
+    const wager = parseFloat(rawWagerStr.replace(/[^0-9.]/g, '')) || 0;
 
-    // Parse prize (if not in sheet, auto assign from prize pool or default distribution)
+    // Get prize
     let prize = 0;
-    if (row[prizeIdx] !== undefined && row[prizeIdx] !== null && String(row[prizeIdx]).trim() !== '') {
-      const rawPrize = String(row[prizeIdx]).replace(/[^0-9.]/g, '');
-      prize = parseFloat(rawPrize) || 0;
+    if (prizeCol !== -1 && row[prizeCol] !== undefined && String(row[prizeCol]).trim() !== '') {
+      prize = parseFloat(String(row[prizeCol]).replace(/[^0-9.]/g, '')) || 0;
     } else {
       prize = DEFAULT_PRIZE_DISTRIBUTION[rankCounter - 1] ?? 0;
     }
+
+    const username = autoMask ? maskUsername(rawUsername) : rawUsername;
 
     results.push({
       id: Math.random().toString(36).substring(2, 9),
@@ -193,6 +257,13 @@ export function parseSheetRowsToLeaderboard(
     rankCounter++;
   }
 
-  // Sort by wager descending or rank ascending
-  return results.sort((a, b) => a.rank - b.rank);
+  // Sort by wager descending (highest wager on top)
+  if (results.some((r) => r.wager > 0)) {
+    results.sort((a, b) => b.wager - a.wager);
+    results.forEach((item, idx) => {
+      item.rank = idx + 1;
+    });
+  }
+
+  return results;
 }
