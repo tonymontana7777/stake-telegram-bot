@@ -67,6 +67,7 @@ state.config = {
   sheetRange: process.env.GOOGLE_SHEET_RANGE || state.config.sheetRange || 'A1:Z1000',
   sheetsSyncEnabled: true,
   timezone: process.env.TIMEZONE || state.config.timezone || 'Europe/Istanbul',
+  enabled: process.env.AUTO_BROADCAST_ENABLED === 'true',
 };
 
 function saveState() {
