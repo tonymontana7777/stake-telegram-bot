@@ -42,15 +42,23 @@ export async function fetchGoogleSheetData(
   }
 
   // Fallback: Fetch directly via Google Sheets CSV export (works for 'anyone with link' or public sheets without token)
+  const timestamp = Date.now();
   let sheetName = '';
   if (cleanRange.includes('!')) {
     sheetName = cleanRange.split('!')[0].trim();
   }
   const csvUrl = sheetName
-    ? `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`
-    : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv`;
+    ? `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&tq=&_t=${timestamp}`
+    : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&id=${cleanId}&_t=${timestamp}`;
 
-  const csvResponse = await fetch(csvUrl);
+  const csvResponse = await fetch(csvUrl, {
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    },
+  });
   if (!csvResponse.ok) {
     throw new Error(
       `Google E-Tablo okunamadı (${csvResponse.status}). Lütfen tablonun Paylaşım ayarlarından "Bağlantıya sahip olan herkes görüntüleyebilir" seçeneğinin açık olduğundan veya Google ile giriş yapıldığından emin olun.`

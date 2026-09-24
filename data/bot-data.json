@@ -13,17 +13,88 @@
     "showPrizes": false
   },
   "items": [
-    { "id": "1", "rank": 1, "username": "De**8", "wager": 63011.06, "prize": 0 },
-    { "id": "2", "rank": 2, "username": "Ah**n", "wager": 52350.07, "prize": 0 },
-    { "id": "3", "rank": 3, "username": "Pu**i", "wager": 47901.68, "prize": 0 },
-    { "id": "4", "rank": 4, "username": "be**5", "wager": 31268.39, "prize": 0 },
-    { "id": "5", "rank": 5, "username": "Co**e", "wager": 26768.6, "prize": 0 },
-    { "id": "6", "rank": 6, "username": "oz**a", "wager": 17988.22, "prize": 0 },
-    { "id": "7", "rank": 7, "username": "Bu**u", "wager": 13187.94, "prize": 0 },
-    { "id": "8", "rank": 8, "username": "Al**5", "wager": 12554.31, "prize": 0 },
-    { "id": "9", "rank": 9, "username": "Ya**7", "wager": 10870.5, "prize": 0 },
-    { "id": "10", "rank": 10, "username": "Al**2", "wager": 9757.55, "prize": 0 }
+    {
+      "id": "1",
+      "rank": 1,
+      "username": "De**8",
+      "wager": 63011.06,
+      "prize": 0
+    },
+    {
+      "id": "2",
+      "rank": 2,
+      "username": "Ah**n",
+      "wager": 52350.07,
+      "prize": 0
+    },
+    {
+      "id": "3",
+      "rank": 3,
+      "username": "Pu**i",
+      "wager": 47901.68,
+      "prize": 0
+    },
+    {
+      "id": "4",
+      "rank": 4,
+      "username": "be**5",
+      "wager": 31268.39,
+      "prize": 0
+    },
+    {
+      "id": "5",
+      "rank": 5,
+      "username": "Co**e",
+      "wager": 26768.6,
+      "prize": 0
+    },
+    {
+      "id": "6",
+      "rank": 6,
+      "username": "oz**a",
+      "wager": 17988.22,
+      "prize": 0
+    },
+    {
+      "id": "7",
+      "rank": 7,
+      "username": "Bu**u",
+      "wager": 13187.94,
+      "prize": 0
+    },
+    {
+      "id": "8",
+      "rank": 8,
+      "username": "Al**5",
+      "wager": 12554.31,
+      "prize": 0
+    },
+    {
+      "id": "9",
+      "rank": 9,
+      "username": "Ya**7",
+      "wager": 10870.5,
+      "prize": 0
+    },
+    {
+      "id": "10",
+      "rank": 10,
+      "username": "Al**2",
+      "wager": 9757.55,
+      "prize": 0
+    }
   ],
-  "logs": [],
+  "logs": [
+    {
+      "id": "990b05y",
+      "timestamp": "2026-09-24T10:56:24.068Z",
+      "dateStr": "24.09.2026",
+      "status": "error",
+      "chatId": "Tanımsız",
+      "messageContent": "STAKE 24.09.2026 3000💵 ÖDÜLLÜ GÜNCEL ÇEVRİM LİSTESİ\n\n1. De**8 $63,011.06\n\n2. Ah**n $52,350.07\n\n3. Pu**i $47,901.68\n\n4. be**5 $31,268.39\n\n5. Co**e $26,768.60\n\n6. oz**a $17,988.22\n\n7. Bu**u $13,187.94\n\n8. Al**5 $12,554.31\n\n9. Ya**7 $10,870.50\n\n10. Al**2 $9,757.55\n\n!stake",
+      "error": "Bot Token girilmemiş. Lütfen Telegram Bot Ayarlarından token ekleyin.",
+      "triggeredBy": "manual"
+    }
+  ],
   "lastRunDate": null
 }

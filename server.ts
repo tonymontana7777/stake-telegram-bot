@@ -98,16 +98,24 @@ async function fetchServerSheetData(spreadsheetId: string, range: string, access
     }
   }
 
-  // Fallback / Direct Link: CSV export via Google Docs URL
+  // Fallback / Direct Link: CSV export via Google Docs URL with cache busting
+  const timestamp = Date.now();
   let sheetName = '';
   if (cleanRange.includes('!')) {
     sheetName = cleanRange.split('!')[0].trim();
   }
   const csvUrl = sheetName
-    ? `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`
-    : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv`;
+    ? `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&tq=&_t=${timestamp}`
+    : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&id=${cleanId}&_t=${timestamp}`;
 
-  const csvRes = await fetch(csvUrl);
+  const csvRes = await fetch(csvUrl, {
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    },
+  });
   if (!csvRes.ok) {
     throw new Error(`Google E-Tablo okunamadı (${csvRes.status}). Lütfen tablonun Paylaşım ayarlarından "Bağlantıya sahip olan herkes görüntüleyebilir" açık olduğundan emin olun.`);
   }
