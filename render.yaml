@@ -6,11 +6,20 @@ services:
     region: frankfurt
     buildCommand: npm install && npm run build
     startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        value: 1TECdVKOeytYv4a2zkXTOJ79nHP9umzc41gyO0KHMKSk
+      - key: GOOGLE_SHEET_GID
+        value: "235680015"
+      - key: GOOGLE_SHEET_RANGE
+        value: A1:Z1000
+      - key: TIMEZONE
+        value: Europe/Istanbul
     disk:
       name: bot-data
       mountPath: /var/data
