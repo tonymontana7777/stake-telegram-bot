@@ -22,6 +22,7 @@ export interface BotConfig {
   sheetsSyncEnabled?: boolean;
   spreadsheetId?: string;
   sheetRange?: string; // e.g. "Sayfa1!A2:D20" or "A2:D20"
+  sheetGid?: string; // Google Sheets tab gid, e.g. 235680015
   googleAccessToken?: string;
 }
 
