@@ -46,6 +46,10 @@ export const DEFAULT_CONFIG: BotConfig = {
   footerTemplate: '!stake',
   autoMask: true,
   dateFormat: 'DD.MM.YYYY',
+  sheetsSyncEnabled: true,
+  spreadsheetId: '1TECdVKOeytYv4a2zkXTOJ79nHP9umzc41gyO0KHMKSk',
+  sheetGid: '235680015',
+  sheetRange: 'A1:Z1000',
 };
 
 /**
