@@ -89,6 +89,22 @@ async function callTelegramApi(token: string, method: string, payload: Record<st
   return data;
 }
 
+function requireAdmin(req: any, res: any, next: any) {
+  const expected = process.env.ADMIN_API_KEY?.trim();
+  if (!expected) {
+    return res.status(403).json({
+      error: 'Yönetim API kapalı. Gerekirse Render üzerinde ADMIN_API_KEY tanımlayın.',
+    });
+  }
+
+  const provided = String(req.header('x-admin-key') || req.query?.admin_key || '').trim();
+  if (provided !== expected) {
+    return res.status(401).json({ error: 'Yetkisiz erişim.' });
+  }
+
+  return next();
+}
+
 // Helper function to fetch Google Sheets data on the server
 async function fetchServerSheetData(spreadsheetId: string, range: string, accessToken?: string, gid?: string): Promise<any[][]> {
   const cleanId = spreadsheetId.trim().match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)?.[1] || spreadsheetId.trim();
@@ -607,8 +623,14 @@ async function startServer() {
     const currentTimeStr = timeFormatter.format(now);
     const currentDateStr = getFormattedDateInTz(tz, now);
 
+    const publicConfig = {
+      ...state.config,
+      botToken: state.config.botToken ? '***configured***' : '',
+      googleAccessToken: state.config.googleAccessToken ? '***configured***' : '',
+    };
+
     res.json({
-      config: state.config,
+      config: publicConfig,
       items: state.items,
       logs: state.logs,
       lastRunDate: state.lastRunDate,
@@ -620,13 +642,13 @@ async function startServer() {
     });
   });
 
-  app.post('/api/config', (req, res) => {
+  app.post('/api/config', requireAdmin, (req, res) => {
     state.config = { ...state.config, ...req.body };
     saveState();
     res.json({ success: true, config: state.config });
   });
 
-  app.post('/api/list', (req, res) => {
+  app.post('/api/list', requireAdmin, (req, res) => {
     if (Array.isArray(req.body.items)) {
       state.items = req.body.items;
       saveState();
@@ -636,7 +658,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/test-telegram', async (req, res) => {
+  app.post('/api/test-telegram', requireAdmin, async (req, res) => {
     const token = req.body.botToken || state.config.botToken;
     if (!token) {
       return res.status(400).json({ success: false, error: 'Telegram Bot Token girilmedi.' });
@@ -661,7 +683,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/test-message', async (req, res) => {
+  app.post('/api/test-message', requireAdmin, async (req, res) => {
     const token = req.body.botToken || state.config.botToken;
     const chatId = req.body.chatId || state.config.chatId;
 
@@ -700,7 +722,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/send-now', async (req, res) => {
+  app.post('/api/send-now', requireAdmin, async (req, res) => {
     const result = await executeBroadcast('manual');
     if (result.success) {
       res.json(result);
@@ -709,7 +731,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/clear-logs', (req, res) => {
+  app.post('/api/clear-logs', requireAdmin, (req, res) => {
     state.logs = [];
     saveState();
     res.json({ success: true });
