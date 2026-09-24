@@ -1,0 +1,6 @@
+{
+  "name": "Stake Telegram Çevrim Botu",
+  "description": "Her gün saat 21:00'da Stake güncel çevrim listesini otomatik okuyup Telegram kanal veya grubuna gönderen otomasyon botu ve yönetim paneli.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

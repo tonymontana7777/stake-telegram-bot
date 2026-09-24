@@ -1,0 +1,438 @@
+{
+  "config": {
+    "botToken": "",
+    "chatId": "",
+    "scheduleTime": "21:00",
+    "timezone": "Europe/Istanbul",
+    "enabled": true,
+    "totalPrize": 3000,
+    "headerTemplate": "STAKE {TARIH} {ODUL}💵 ÖDÜLLÜ GÜNCEL ÇEVRİM LİSTESİ",
+    "footerTemplate": "!stake",
+    "autoMask": true,
+    "dateFormat": "DD.MM.YYYY"
+  },
+  "items": [
+    {
+      "id": "zumqi4r",
+      "rank": 1,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "20zwuku",
+      "rank": 2,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "avmh0fc",
+      "rank": 3,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "0e42gy4",
+      "rank": 4,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 58
+    },
+    {
+      "id": "u8kz6gu",
+      "rank": 5,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 55
+    },
+    {
+      "id": "1bad7j2",
+      "rank": 6,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "lfeq7jk",
+      "rank": 7,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "d7l3vip",
+      "rank": 8,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "odenvu5",
+      "rank": 9,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 61607
+    },
+    {
+      "id": "s5gd8sh",
+      "rank": 10,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 5665
+    },
+    {
+      "id": "eid3ygw",
+      "rank": 11,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 2829
+    },
+    {
+      "id": "dq3lma7",
+      "rank": 12,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1482
+    },
+    {
+      "id": "yji3m32",
+      "rank": 13,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 12
+    },
+    {
+      "id": "h0deksw",
+      "rank": 14,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "9qghfh8",
+      "rank": 15,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 194
+    },
+    {
+      "id": "iovsk7l",
+      "rank": 16,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "h0000uu",
+      "rank": 17,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1975
+    },
+    {
+      "id": "w138h2l",
+      "rank": 18,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 12345
+    },
+    {
+      "id": "r8xvj41",
+      "rank": 19,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 5564
+    },
+    {
+      "id": "3bg41of",
+      "rank": 20,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "w796jxg",
+      "rank": 21,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 3
+    },
+    {
+      "id": "1ci1uay",
+      "rank": 22,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 6107
+    },
+    {
+      "id": "bwpcq9d",
+      "rank": 23,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1
+    },
+    {
+      "id": "0tqrpag",
+      "rank": 24,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "3niiji3",
+      "rank": 25,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 34
+    },
+    {
+      "id": "c6v5y5y",
+      "rank": 26,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 632163
+    },
+    {
+      "id": "dohykb1",
+      "rank": 27,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "rwqr397",
+      "rank": 28,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 7
+    },
+    {
+      "id": "p9nsb2g",
+      "rank": 29,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 61
+    },
+    {
+      "id": "hzb9it1",
+      "rank": 30,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1909
+    },
+    {
+      "id": "n7qgu3p",
+      "rank": 31,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "11tryw6",
+      "rank": 32,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 2
+    },
+    {
+      "id": "z544awe",
+      "rank": 33,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 91
+    },
+    {
+      "id": "ktjczyw",
+      "rank": 34,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 59
+    },
+    {
+      "id": "9hg15be",
+      "rank": 35,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 5
+    },
+    {
+      "id": "busz2px",
+      "rank": 36,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 3462
+    },
+    {
+      "id": "uyyot74",
+      "rank": 37,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1621
+    },
+    {
+      "id": "ilxd2k8",
+      "rank": 38,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "hy0wp6k",
+      "rank": 39,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 61
+    },
+    {
+      "id": "vnswryy",
+      "rank": 40,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1
+    },
+    {
+      "id": "fq7g83a",
+      "rank": 41,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 31
+    },
+    {
+      "id": "303qu32",
+      "rank": 42,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "tmrz8hr",
+      "rank": 43,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 34
+    },
+    {
+      "id": "sf29olu",
+      "rank": 44,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 58
+    },
+    {
+      "id": "h9wcufr",
+      "rank": 45,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 1905
+    },
+    {
+      "id": "f7838k7",
+      "rank": 46,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 444401
+    },
+    {
+      "id": "y89peql",
+      "rank": 47,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 31
+    },
+    {
+      "id": "opb3dt9",
+      "rank": 48,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 7
+    },
+    {
+      "id": "t9tig6q",
+      "rank": 49,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "gva91cu",
+      "rank": 50,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "edkmdtk",
+      "rank": 51,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "6nxllvy",
+      "rank": 52,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 7
+    },
+    {
+      "id": "zwvckae",
+      "rank": 53,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 232
+    },
+    {
+      "id": "cxuvq5n",
+      "rank": 54,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 770
+    },
+    {
+      "id": "69h4dj7",
+      "rank": 55,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 3535
+    },
+    {
+      "id": "7s61jw1",
+      "rank": 56,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    },
+    {
+      "id": "gi7771l",
+      "rank": 57,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 67
+    },
+    {
+      "id": "by0dy07",
+      "rank": 58,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 21
+    },
+    {
+      "id": "a7mlnqf",
+      "rank": 59,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 7534
+    },
+    {
+      "id": "33hs9p6",
+      "rank": 60,
+      "username": "Ma**x",
+      "wager": 0,
+      "prize": 0
+    }
+  ],
+  "logs": [],
+  "lastRunDate": null
+}

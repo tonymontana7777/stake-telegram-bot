@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: stake-telegram-bot
+    env: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    disk:
+      name: bot-data
+      mountPath: /var/data
+      sizeGB: 1
